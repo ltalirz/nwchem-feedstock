@@ -20,13 +20,15 @@ export _CC=gcc
 #=================================================
 export NWCHEM_TOP="$SRC_DIR"
 
-if [[ $ARCH = 64 ]]; then
-	export TARGET=LINUX64
-	export NWCHEM_TARGET=LINUX64
+# select ARCH file and version
+if [[ -z "$MACOSX_DEPLOYMENT_TARGET" ]]; then
+    export TARGET=LINUX64
+    export NWCHEM_TARGET=LINUX64
 else
-	export TARGET=LINUX
-	export NWCHEM_TARGET=LINUX
+    export TARGET=MACX64
+    export NWCHEM_TARGET=MACX64
 fi
+
 
 #export NWCHEM_MODULES="all python nwxc"
 export NWCHEM_MODULES="all python"
@@ -42,7 +44,7 @@ export BLASOPT="-L$PREFIX/lib -lopenblas -lpthread -lrt"
 export BLAS_SIZE=4
 export USE_64TO32=y
 
-export LAPACK_LIB="-lopenblas"
+export LAPACK_LIB="$BLASOPT"
 
 export SCALAPACK_SIZE=4
 export SCALAPACK_LIB="-L$PREFIX/lib -lscalapack"
@@ -56,6 +58,7 @@ make CC=${CC} _CC=${_CC} FC=${FC} _FC=${_FC}  DEPEND_CC=${CC} nwchem_config
 cat ${SRC_DIR}/src/config/nwchem_config.h
 make DEPEND_CC=${CC} CC=${CC}  _CC=${CC} 64_to_32 
 make CC=${CC} DEPEND_CC=${CC} _CC=${_CC} FC=${FC} _FC=${_FC} V=1
+cat $NWCHEM_TOP/src/tools/build/config.log
 
 #=================================================
 #=Install=NWChem
